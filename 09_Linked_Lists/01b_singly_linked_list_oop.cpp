@@ -60,6 +60,48 @@ public:
         }
     }
 
+    // Add in between: Worst-Case Time Complexity: O(n) , Best-Case Time Complexity: O(1)
+    void push_between(int pos, int val) // pos meaning indices
+    {
+        if (pos < 0) // Edge Case: Prevent invalid negative indexes
+        {
+            cout << "Invalid position!" << endl;
+            return;
+        }
+        else if (pos == 0) // Shortcut: If target is position 0, reuse existing logic
+        {
+            push_front(val);
+        }
+        else
+        {
+            Node *temp = head;
+            // Move temp exactly to the node BEFORE the target (pos - 1)
+            for (int i = 0; i < pos - 1; i++)
+            {
+                if (temp == NULL) // Check out-of-bounds positions
+                {
+                    cout << "Invalid position!" << endl;
+                    return;
+                }
+                temp = temp->next;
+            }
+
+            if (temp == NULL) // Prevent off-by-one gaps at the end of the list
+            {
+                cout << "Invalid position" << endl;
+                return;
+            }
+
+            Node *newNode = new Node(val);
+            newNode->next = temp->next;
+            temp->next = newNode;
+            if (newNode->next == NULL)
+            {
+                tail = newNode;
+            }
+        }
+    }
+
     // Remove from the front: O(1) Time Complexity
     void pop_front()
     {
@@ -111,6 +153,47 @@ public:
         }
     }
 
+    // Pop in between
+    void pop_between(int pos)
+    {
+        if (pos < 0)
+        {
+            cout << "Invalid Position!" << endl;
+            return;
+        }
+        else if (pos == 0)
+        {
+            pop_front();
+        }
+        else
+        {
+            Node *temp = head;
+            for (int i = 0; i < pos - 1; i++)
+            {
+                if (temp == NULL)
+                {
+                    cout << "Invalid Position" << endl;
+                    return;
+                }
+                temp = temp->next;
+            }
+            if (temp == NULL || temp->next == NULL)
+            {
+                cout << "Invalid Position" << endl;
+                return;
+            }
+            Node *victim = temp->next;
+            temp->next = victim->next;
+
+            if (temp->next == NULL)
+            {
+                tail = temp;
+            }
+
+            delete victim;
+        }
+    }
+
     // The traversal
     void print_list()
     {
@@ -128,17 +211,22 @@ int main()
 {
     List mylist;
 
-    // 3. Testing the operations 
+    // Testing insertion
     mylist.push_front(30);
     mylist.push_front(20);
     mylist.push_front(10);
     mylist.push_back(40);
     mylist.push_back(50);
+    // Test inserting in the middle
+    mylist.push_between(1, 99);
 
     mylist.print_list();
 
+    // Testing Deletion
     mylist.pop_front();
     mylist.pop_back();
+    // Test deleting from the middle
+    mylist.pop_between(2);
 
     mylist.print_list();
 
