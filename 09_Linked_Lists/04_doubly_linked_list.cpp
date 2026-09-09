@@ -57,6 +57,49 @@ public:
         }
     }
 
+    void push_between(int pos, int val)
+    {
+        if (pos < 0)
+        {
+            cout << "Invalid Position!" << endl;
+            return;
+        }
+        else if (pos == 0)
+        {
+            push_front(val);
+        }
+        else
+        {
+            Node *temp = head;
+            for (int i = 0; i < pos - 1; i++)  // Drive to pos - 1
+            {
+                if (temp == NULL)
+                {
+                    cout << "Invalid Position!" << endl;
+                    return;
+                }
+                temp = temp->next;
+            }
+            if (temp == NULL)
+            {
+                cout << "Invalid Position!" << endl;
+                return;
+            }
+            if (temp == tail)
+            {
+                push_back(val);
+                return;
+            }
+
+            // 4-pointer middle rewire
+            Node *newNode = new Node(val);
+            newNode->next = temp->next;
+            newNode->prev = temp;
+            temp->next = newNode;
+            newNode->next->prev = newNode;
+        }
+    }
+
     void pop_front()
     {
         if (head == NULL)
@@ -130,18 +173,14 @@ int main()
     mylist.push_back(30);
     mylist.push_front(10);
     mylist.push_front(5);
+    mylist.push_between(2, 15);
+    mylist.push_between(4, 25);
 
     mylist.print_list();
     mylist.print_reverse();
 
     mylist.pop_front();
     mylist.pop_back();
-
-    mylist.print_list();
-
-    mylist.pop_front();
-    mylist.pop_front();
-    mylist.pop_front();
 
     mylist.print_list();
 
