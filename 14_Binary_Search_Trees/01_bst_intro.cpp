@@ -46,6 +46,31 @@ Node *buildTree(int arr[], int size)
     return root;
 }
 
+bool search(Node *root, int key)
+{
+    // 1. CRITICAL: Check if node exists FIRST to prevent crashes
+    if (root == NULL)
+    {
+        return false;
+    }
+
+    // 2. Check if we found the target
+    if (root->data == key)
+    {
+        return true;
+    }
+
+    // 3. CATCH AND RETURN the result of the recursion!
+    if (key < root->data)
+    {
+        return search(root->left, key);
+    }
+    else
+    {
+        return search(root->right, key);
+    }
+}
+
 // Left, Root, Right (sorted order)
 void inorder(Node *root)
 {
@@ -89,6 +114,8 @@ int main()
 
     // Store the returned root of the fully constructed tree
     Node *root = buildTree(arr, size);
+
+    cout << search(root, 5) << endl;
 
     cout << "Inorder: ";
     inorder(root);
