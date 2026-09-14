@@ -16,7 +16,7 @@ public:
 };
 
 // Recursively find the correct position and attach the new node
-Node *insert(Node *root, int val)
+Node *insertNode(Node *root, int val)
 {
     if (root == NULL)
     {
@@ -25,11 +25,11 @@ Node *insert(Node *root, int val)
 
     if (val < root->data)
     {
-        root->left = insert(root->left, val);
+        root->left = insertNode(root->left, val);
     }
     else
     {
-        root->right = insert(root->right, val);
+        root->right = insertNode(root->right, val);
     }
 
     return root;
@@ -41,7 +41,65 @@ Node *buildTree(int arr[], int size)
     Node *root = NULL;
     for (int i = 0; i < size; i++)
     {
-        root = insert(root, arr[i]);
+        root = insertNode(root, arr[i]);
+    }
+    return root;
+}
+
+Node *deleteNode(Node *root, int key)
+{
+    // BASE CASE: Reached the end of a branch, target not found
+    if (root == NULL)
+    {
+        cout << "No node to delete" << endl;
+        return NULL;
+    }
+
+    // SEARCH PHASE: Traverse left or right based on BST property
+    if (key < root->data)
+    {
+        root->left = deleteNode(root->left, key);
+    }
+    else if (key > root->data)
+    {
+        root->right = deleteNode(root->right, key);
+    }
+    // TARGET ACQUIRED: root->data == key
+    else
+    {
+        // Case 1: Leaf Node
+        if (root->left == NULL && root->right == NULL)
+        {
+            delete root;
+            return NULL;
+        }
+
+        // Case 2: One child Node
+        else if (root->left == NULL)
+        {
+            Node *temp = root->right;
+            delete root;
+            return temp;
+        }
+        else if (root->right == NULL)
+        {
+            Node *temp = root->left;
+            delete root;
+            return temp;
+        }
+
+        // Case 3: Two child Node
+        else
+        {
+            Node *succ = root->right;
+            while (succ->left != NULL)
+            {
+                succ = succ->left;
+            }
+            root->data = succ->data;
+            root->right = deleteNode(root->right, succ->data);
+            return root;
+        }
     }
     return root;
 }
@@ -115,7 +173,20 @@ int main()
     // Store the returned root of the fully constructed tree
     Node *root = buildTree(arr, size);
 
-    cout << search(root, 5) << endl;
+    cout << "Is 5 exist in the tree: " << search(root, 5) << endl;
+
+    insertNode(root, 25);
+
+    cout << "Before deletion: ";
+    inorder(root);
+    cout << endl;
+
+    deleteNode(root, -5);
+    deleteNode(root, 34);
+
+    cout << "After deletion: ";
+    inorder(root);
+    cout << endl;
 
     cout << "Inorder: ";
     inorder(root);
@@ -127,6 +198,7 @@ int main()
 
     cout << "Postorder: ";
     postorder(root);
+    cout << endl;
 
     return 0;
 }
