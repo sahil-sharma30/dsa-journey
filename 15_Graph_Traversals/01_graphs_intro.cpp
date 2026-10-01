@@ -62,6 +62,26 @@ public:
             cout << endl;
         }
     }
+
+    ~Graph()
+    {
+        // 1. Loop through every vertex's list
+        for (int i = 0; i < V; i++)
+        {
+            vertex *temp = adjList[i];
+
+            // 2. Walk down the list and free every individual memory.
+            while (temp != NULL)
+            {
+                vertex *nextVertex = temp->next; // Save the next location
+                delete temp;                     // Destroy the current record
+                temp = nextVertex;               // Move to the next location
+            }
+        }
+
+        // 3. Finally, delete the array itself
+        delete[] adjList;
+    }
 };
 
 int main()
